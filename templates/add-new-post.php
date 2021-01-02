@@ -1,0 +1,80 @@
+<?php get_header(); ?>
+<div class="container">
+    <div class="row ca-user-dashboard">
+        <!--Side Bar-->
+        <?php include("partials/sidebar.php"); ?>
+        <!--./Side Bar-->
+        <div class="col-md-9 col-12 ca-main-content">
+            <!--Post Buttons-->
+            <?php include("partials/posts-btns.php"); ?>
+            <!--./Post Buttons-->
+            <div id="ca-new-post-card" class="card ca-new-post-card">
+                <div class="card-header">
+                    <h2>Add New Post</h2>
+                </div>
+                <div class="card-body">
+                    <form id="postForm" method="post" action="<?php echo $_SERVER['REQUEST_URI']?>" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="postTitle">Title</label>
+                            <input type="text" class="form-control" id="postTitle" name="postTitle" placeholder="Add Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="postCategory">Select Category</label>
+                            <select class="form-control" id="postCategory" name="postCategory">
+                                <option value=""> -- Select Category -- </option>
+                                <?php
+                                    $catList = get_categories();
+                                    foreach($catList as $listval)
+                                    {
+                                        echo '<option value="'.$listval->term_id.'">'.$listval->name.'</option>';
+                                    }
+                                    ?>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="featuredimgfile" name="featuredimgfile" onchange="preview_image(event)" accept="image/*">
+                                    <label class="custom-file-label" for="featuredimgfile">Choose Featured Image</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card" style="width: 18rem;">
+                                    <img id="cafeaturedimg" class="card-img-top" src="<?php echo Cawoy_Frontend_DIR.'assets/images/post_snippet.png' ?>" alt="Card image cap">
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        $content   = '';
+                        $editor_id = 'postContent';
+                        wp_editor( $content, $editor_id );
+                        ?>
+                        <?php wp_nonce_field( 'my_image_upload', 'my_image_upload_nonce' ); ?>
+                        <div class="form-group">
+                            <label for="postTitle">Tags</label>
+                            <input type="text" class="form-control" id="postTags" name="postTags" placeholder="Add tags each seperated by comma  e.g tag 1, tag 2" value="">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12 text-right">
+                                <button type="submit" class="btn btn-success" name="ca_save_draft" id="ca_save_draft">Save as Draft</button>
+                                <button type="submit" class="btn btn-primary" name="ca-submit-post" id="ca-submit-post">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function preview_image(event) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var output = document.getElementById('cafeaturedimg');
+                        output.src = reader.result;
+                    }
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+
+            </script>
+        </div>
+    </div>
+</div>
+<?php get_footer(); ?>
